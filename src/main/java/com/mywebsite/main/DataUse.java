@@ -505,7 +505,7 @@ public class DataUse extends Dao_Main
 		for(int row=0; row<data.size(); row++)
 		{
 			// build header
-			ArrayList <String> tempList = data.get(row);
+			ArrayList<String> tempList = data.get(row);
 			if(row==0)
 			{
 				websitedata += "<thead>";
@@ -522,17 +522,22 @@ public class DataUse extends Dao_Main
 			else
 			{
 				websitedata += "<tr>";
-				for(String temp: tempList)
+//				for(String temp: tempList)
+				for(int i=0; i<tempList.size(); i++)
 				{
+					String temp = tempList.get(i);
 		            websitedata += "<td>";
 		            if(admin) {
-		                if(temp.equals(String.valueOf(1))) {
-		                    websitedata += "yes";
-    		            } else if(temp.equals(String.valueOf(0))) {
-    		                websitedata += "no";
-    		            } else {
-    		                websitedata += temp;
-    		            }
+		            	ArrayList<String> findCol = data.get(0);
+		                if((findCol.size()-1) == i) {
+			            	if(temp.equals(String.valueOf(1))) {
+			                    websitedata += "yes";
+	    		            } else if(temp.equals(String.valueOf(0))) {
+	    		                websitedata += "no";
+	    		            }
+		            	} else {
+		            		websitedata += temp;
+		            	}
 	                } else {
 	                    websitedata += temp;
 	                }
@@ -610,7 +615,7 @@ public class DataUse extends Dao_Main
              * Yes, works normally on its own, but for different database models program needs different object-casts
              * because method is not content of normal code within abstract environment.
              */
-            switch (databaseType)
+            switch(databaseType)
             {
 			case sqlite:
 				((DatabaseSQLite)databasesource.getInstance()).insertData();
