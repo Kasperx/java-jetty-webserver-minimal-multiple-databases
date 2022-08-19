@@ -10,7 +10,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
@@ -31,12 +33,16 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
+import main.java.com.mywebsite.Data.Person;
 import main.java.com.mywebsite.common.logger.Logger;
 import main.java.com.mywebsite.common.logger.LoggerConfig;
-import main.java.com.mywebsite.database.Database;
-import main.java.com.mywebsite.database.Database.DatabaseType;
+import main.java.com.mywebsite.database.Database_delete;
+import main.java.com.mywebsite.database.Database_delete.DatabaseType;
 import main.java.com.mywebsite.main.DAO.Dao_Main;
+import main.java.com.mywebsite.database.DatabaseFile_delete;
 import main.java.com.mywebsite.database.DatabaseFile;
+import main.java.com.mywebsite.database.Database;
+import main.java.com.mywebsite.database.DatabaseSQLite_delete;
 import main.java.com.mywebsite.database.DatabaseSQLite;
 
 public class DataUse extends Dao_Main
@@ -47,7 +53,7 @@ public class DataUse extends Dao_Main
     static String htmlhead_fullSize;
     static String htmlend;
     static Database.DatabaseType databaseType;
-    static Logger logger = LoggerConfig.getLogger(Database.class.getName());
+    static Logger logger = LoggerConfig.getLogger(Database_delete.class.getName());
     
     public DataUse()
     {
@@ -123,19 +129,20 @@ public class DataUse extends Dao_Main
             // value of filenames by client come with a slash, but java doesn't find files with slash, so cut first char...
             String wantedFileFromClient = httpbase+File.separator+request.getServletPath().substring(1);
             String fileContent;
-            if (new File(wantedFileFromClient+"index.html").exists()) {
+            if(new File(wantedFileFromClient+"index.html").exists()) {
                 wantedFileFromClient += "index.html";
             }
             fileContent = readFile(wantedFileFromClient);
             PrintWriter out = response.getWriter();
-            if (wantedFileFromClient.endsWith(".html")) {
-                response.setContentType("text/html;charset=UTF-8");
+            response.setCharacterEncoding("utf-8");
+            if(wantedFileFromClient.endsWith(".html")) {
+            	response.setContentType("text/html");
             }
-            else if (wantedFileFromClient.endsWith(".css")) {
-                response.setContentType("text/css;charset=UTF-8");
+            else if(wantedFileFromClient.endsWith(".css")) {
+                response.setContentType("text/css");
             }
-            else if (wantedFileFromClient.endsWith(".js")){
-                response.setContentType("application/json;charset=UTF-8");
+            else if(wantedFileFromClient.endsWith(".js")){
+                response.setContentType("application/json");
             }
             response.addHeader("Access-Control-Allow-Origin", "*");
             response.setStatus(HttpServletResponse.SC_OK);
@@ -280,7 +287,7 @@ public class DataUse extends Dao_Main
             response.setCharacterEncoding("utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
 //            JSONObject data = databasesource.getDataJson();
-            ArrayList <ArrayList<String>> data = databasesource.getData();
+            ArrayList<Person> data = databasesource.getData();
             String websitedata = null;
             if(useJson) {
                 response.setContentType("application/json");
@@ -443,7 +450,7 @@ public class DataUse extends Dao_Main
             {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setCharacterEncoding("utf-8");
-                ArrayList <ArrayList<String>> data = databasesource.getAllData();
+                ArrayList<Person> data = databasesource.getAllData();
                 String websitedata = null;
                 if(useJson) {
                     response.setContentType("application/json");
@@ -474,70 +481,61 @@ public class DataUse extends Dao_Main
             e.printStackTrace();
         }
     }
+//    /**
+//     * 
+//     * @param data
+//     * @return
+//     */
+//    private static String fillWebsiteWithData(ArrayList<Person> data)
+//    {
+//    	return fillWebsiteWithData(data, false);
+//    }
     /**
-     * 
-     * @param data
-     * @return
-     */
-    private static String fillWebsiteWithData(ArrayList <ArrayList<String>> data)
-    {
-    	return fillWebsiteWithData(data, false);
-    }
-    /**
-     * 
      * @param data
      * @param admin
      * @return
      */
-	private static String fillWebsiteWithData(ArrayList <ArrayList<String>> data, boolean admin)
+	private static String fillWebsiteWithData(ArrayList<Person> data, boolean admin)
 	{
 		String websitedata;
-		if(admin)
-		{
-			websitedata = htmlhead_fullSize;
-			websitedata += "<h1 style='font-size:50px;'><marquee>Admin view</marquee></h1></p>";
-		} else {
-			websitedata = htmlhead_halfSize;
-			websitedata += "<h1 style='font-size:50px;'><marquee>User view</marquee></h1></p>";
-		}
+		websitedata = htmlhead_fullSize;
+		websitedata += "<h1 style='font-size:50px;'><marquee>Admin view</marquee></h1></p>";
 		websitedata += "<table class=\"table table-striped\">";
 		websitedata += "<thead>";
 		for(int row=0; row<data.size(); row++)
 		{
 			// build header
-			ArrayList <String> tempList = data.get(row);
+			Person person = data.get(row);
 			if(row==0)
 			{
 				websitedata += "<thead>";
-				for(String temp: tempList)
-				{
-					websitedata += ""
-						+ "<th>"
-						+ temp
-						+ "</th>";	
-				}
+//				for(Person temp: tempList)
+//				{
+//					websitedata += ""
+//						+ "<th>"
+//						+ temp
+//						+ "</th>";	
+//				}
+				websitedata += ""
+			        + "<tr>"
+			        + "<th>"+person.header_firstName+"</th>"
+			        + "<th>"+person.header_lastName+"</th>"
+	                + "</tr>"
+			        ;	
 				websitedata += "</thead>";
 			}
 			// build data
 			else
 			{
-				websitedata += "<tr>";
-				for(String temp: tempList)
-				{
-		            websitedata += "<td>";
-		            if(admin) {
-		                if(temp.equals(String.valueOf(1))) {
-		                    websitedata += "yes";
-    		            } else if(temp.equals(String.valueOf(0))) {
-    		                websitedata += "no";
-    		            } else {
-    		                websitedata += temp;
-    		            }
-	                } else {
-	                    websitedata += temp;
-	                }
-		            websitedata += "</td>";
-				}
+				websitedata += ""
+			        + "<tr>"
+			        + "<th>"+person.firstName+"</th>"
+			        + "<th>"+person.lastName+"</th>"
+			        + "<th>"+person.password+"</th>"
+			        + "<th>"+person.isAdmin+"</th>"
+	                + "</tr>"
+			        ;	
+				websitedata += "</thead>";
 				websitedata += "</tr>";
 			}
 		}
@@ -564,6 +562,86 @@ public class DataUse extends Dao_Main
 		websitedata += "</table>";
 		websitedata += htmlend;
 		return websitedata;
+	}
+	private static String fillWebsiteWithData(ArrayList<Person> data)
+	{
+	    String websitedata;
+        websitedata = htmlhead_halfSize;
+        websitedata += "<h1 style='font-size:50px;'><marquee>User view</marquee></h1></p>";
+	    websitedata += "<table class=\"table table-striped\">";
+	    websitedata += "<thead>";
+	    for(int row=0; row<data.size(); row++)
+	    {
+	        // build header
+	        Person person = data.get(row);
+	        if(row==0)
+	        {
+	            websitedata += "<thead>";
+//				for(Person temp: tempList)
+//				{
+//					websitedata += ""
+//						+ "<th>"
+//						+ temp
+//						+ "</th>";	
+//				}
+	            websitedata += ""
+                    + "<tr>"
+                    + "<th>"+person.firstName+"</th>"
+                    + "<th>"+person.lastName+"</th>"
+                    + "</tr>"
+                    ;	
+	            websitedata += "</thead>";
+	        }
+	        // build data
+	        else
+	        {
+	            websitedata += ""
+                    + "<tr>"
+                    + "<th>"+person.firstName+"</th>"
+                    + "<th>"+person.lastName+"</th>"
+                    + "</tr>"
+                    ;	
+	            websitedata += "</thead>";
+//				for(String temp: tempList)
+//				{
+//		            websitedata += "<td>";
+//		            if(admin) {
+//		                if(temp.equals(String.valueOf(1))) {
+//		                    websitedata += "yes";
+//    		            } else if(temp.equals(String.valueOf(0))) {
+//    		                websitedata += "no";
+//    		            } else {
+//    		                websitedata += temp;
+//    		            }
+//	                } else {
+//	                    websitedata += temp;
+//	                }
+//		            websitedata += "</td>";
+//				}
+	            websitedata += "</tr>";
+	        }
+	    }
+	    // Add extra line for user
+        websitedata += "<tr>";
+        websitedata += "<td>";
+        websitedata += "<input placeholder='insert name'>";
+        websitedata += "</td>";
+        websitedata += "<td>";
+        websitedata += "<input placeholder='insert surname'></input>";
+        websitedata += "</td>";
+        websitedata += "</tr>";
+        websitedata += "<tr>";
+        websitedata += "<td>";
+        websitedata += "<button>Send</button>";
+        websitedata += "</td>";
+        websitedata += "<td>";
+        websitedata += "<div></div>";
+        websitedata += "</td>";
+        websitedata += "</tr>";
+	    // Add extra line for user
+	    websitedata += "</table>";
+	    websitedata += htmlend;
+	    return websitedata;
 	}
 //    public static void clientRequest_GetAllData(HttpServletRequest request, HttpServletResponse response)
 //    {
@@ -645,20 +723,63 @@ public class DataUse extends Dao_Main
              * because method is not content of normal code within abstract environment.
              */
             String websitedata = null;
+//            ArrayList<String> json = new ArrayList<String>();
+            Map<String, Boolean> json = new HashMap<String, Boolean>();
             if(useJson) {
-                websitedata = "yes";
+//                websitedata = "json:'yes'";
+//            	json.add("json:true");
+            	json.put("json", true);
             } else {
-                websitedata = "no";
+//                websitedata = "json:'no'";
+//            	json.add(false);
+//            	json.add("json:false");
+            	json.put("json", false);
             }
             Gson gson = new Gson();
-            websitedata = gson.toJson(websitedata);
+            websitedata = gson.toJson(json);
             response.setCharacterEncoding("utf-8");
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().println(websitedata);
+            response.getWriter().println(json);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    /**
+     * 
+     * @param request
+     * @param response
+     */
+    public static void clientRequest_AddUser(HttpServletRequest request, HttpServletResponse response)
+    {
+    	try
+    	{
+    		logger.info("Found request: "+request.getParameter("get : "
+    				+request.getParameter("name")
+    				+request.getParameter("surname")
+    				));
+    		String name = request.getParameter("name");
+    		String surname = request.getParameter("surname");
+    		/*
+    		 * Yes, works normally on its own, but for different database models program needs different object-casts
+    		 * because method is not content of normal code within abstract environment.
+    		 */
+//    		String websitedata = null;
+//    		if(useJson) {
+//    			websitedata = "json:yes";
+//    		} else {
+//    			websitedata = "json:no";
+//    		}
+//    		Gson gson = new Gson();
+//    		websitedata = gson.toJson(websitedata);
+//    		response.setCharacterEncoding("utf-8");
+//    		response.setContentType("application/json");
+    		databasesource.insertData(new String[] {name, surname});
+    		response.setStatus(HttpServletResponse.SC_OK);
+//    		response.getWriter().println(websitedata);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
     }
     /**
      * 

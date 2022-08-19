@@ -2,13 +2,7 @@ package main.java.com.mywebsite.main;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.CookieManager;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -16,19 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.google.gson.GsonBuilder;
 
 import main.java.com.mywebsite.common.logger.Logger;
 import main.java.com.mywebsite.common.logger.LoggerConfig;
-import main.java.com.mywebsite.database.Database;
-import main.java.com.mywebsite.database.DatabaseSQLite;
 
 public class Web
 {
@@ -92,12 +79,10 @@ public class Web
             server.start();
             server.join();
             
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error(e);
         }
     }
-
     public static void main(String args[])
     {
         for(int i = 0; i < args.length; i++)
@@ -154,11 +139,13 @@ public class Web
         private String request_api_insert_data_to_db = "insert";
         private String request_api_get_data_for_admin = "admin";
         private String request_api_use_json = "use_json";
+        private String request_api_add_user = "adduser";
         private String requestByClient = "";
         public Web_() {}
         
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException
         {
             DataUse website = new DataUse();
             website.sethttpbase(httpbase);
@@ -168,39 +155,36 @@ public class Web
             	logger.info("Found parameter: "+parameter);
             }
             requestByClient = request.getRequestURI().toLowerCase();
-            if (requestByClient.contains(request_stringToGetWebsite)
+            if(requestByClient.contains(request_stringToGetWebsite)
                     && parameter == null
-                    )
-            {
+                    ) {
                 website.clientRequest_Website(request, response);
             }
-            else if (request_api_weather.equals(parameter))
-            {
+            else if(request_api_weather.equals(parameter)) {
                 website.clientRequest_Weather(request, response);
             }
-//            else if (request_api_example.equals(parameter))
-//            {
+//            else if (request_api_example.equals(parameter)) {
 //                website.clientRequest_TableNames(request, response);
 //            }
-            else if (request_api_call_data_from_db.equals(parameter))
-            {
+            else if(request_api_call_data_from_db.equals(parameter)) {
                 website.clientRequest_GetData(request, response);
             }
-            else if (request_api_insert_data_to_db.equals(parameter))
-            {
+            else if(request_api_insert_data_to_db.equals(parameter)) {
                 website.clientRequest_InsertDataToDb(request, response);
             }
-            else if (request_api_get_data_for_admin.equals(parameter))
-            {
+            else if(request_api_get_data_for_admin.equals(parameter)) {
                 website.clientRequest_GetAllData(request, response);
             }
-            else if (request_api_use_json.equals(parameter))
-            {
+            else if(request_api_use_json.equals(parameter)) {
                 website.clientRequest_UseJson(request, response);
+            }
+            else if(request_api_add_user.equals(parameter)) {
+            	website.clientRequest_AddUser(request, response);
             }
         }
         @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException
         {
         	super.doPost(request, response);
             String parameter = request.getParameter("get");
