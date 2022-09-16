@@ -97,6 +97,8 @@
       // Manage header
       $('#h1').empty();
       $('#h1').append('<h1 style="font-size:50px;"><marquee>User view</marquee></h1></p>');
+      $('body').removeClass("container-fluid");
+      $('body').addClass("container");
       //////////////////////////////////////////////////////
       // Manage table for data input
       //////////////////////////////////////////////////////
@@ -109,23 +111,31 @@
       table.addClass("table-striped");
       table.addClass("table-hover");
       table.attr('id', 'table');
-      table.append('<thead class="thead-dark">'
-        +'<tr>'
-        +'<th>First Name</th>'
-        +'<th>Last Name</th>'
-        +'<th></th>'
-        +'</tr>'
-        +'</thead>'
-      );
       // table.addClass("thead-dark");
-      table.append('<tr>');
-      table.append('<tbody>');
       let tabledata = '';
       for(let i=0; i<data.length; i++){
-        tabledata += '<tr>';
-        tabledata += '<td>'+data[i].firstName+'</td>';
-        tabledata += '<td>'+data[i].lastName+'</td>';
-        tabledata += '</tr>';
+		if(i==0){
+	      table.append('<thead class="thead-dark">'
+	        +'<tr>'
+	        +'<th>'+data[i].header_firstName+'</th>'
+	        +'<th>'+data[i].header_lastName+'</th>'
+	        +'<th></th>'
+	        +'</tr>'
+	        +'</thead>'
+	      );
+	      table.append('<tr>');
+      		table.append('<tbody>');
+	      /*
+	        tabledata += '<tr>';
+	        tabledata += '<td>'+data[i].header_firstName+'</td>';
+	        tabledata += '<td>'+data[i].header_lastName+'</td>';
+	        tabledata += '</tr>';*/
+		} else {
+	        tabledata += '<tr>';
+	        tabledata += '<td>'+data[i].firstName+'</td>';
+	        tabledata += '<td>'+data[i].lastName+'</td>';
+	        tabledata += '</tr>';
+        }
       }
       table.append(tabledata);
       table.append('</tbody>');
@@ -147,6 +157,8 @@
       // Manage table for data input
       //////////////////////////////////////////////////////
       // create table with data
+      $('body').removeClass("container");
+      $('body').addClass("container-fluid");
       let table = $('#table');
       table.remove();
       // table = $('<table>');
@@ -155,31 +167,39 @@
       table.addClass("table-striped");
       table.addClass("table-hover");
       table.attr('id', 'table');
-      table.append('<thead class="thead-dark">'
-        +'<tr>'
-        +'<th>First Name</th>'
-        +'<th>Last Name</th>'
-        +'<th>Password</th>'
-        +'<th>Admin</th>'
-        +'<th></th>'
-        +'</tr>'
-        +'</thead>'
-      );
-      // table.addClass("thead-dark");
-      table.append('<tr>');
-      table.append('<tbody>');
-      let tabledata = '';
-      for(let i=0; i<data.length; i++){
-        tabledata += '<tr>';
-        tabledata += '<td>'+data[i].firstName+'</td>';
-        tabledata += '<td>'+data[i].lastName+'</td>';
-        tabledata += '<td>'+data[i].password+'</td>';
-        if(data[i].isAdmin){
+	    let tabledata = '</tr>';
+	    for(let i=0; i<data.length; i++){
+		if(i==0){
+	      table.append('<thead class="thead-dark">'
+	        +'<tr>'
+	        +'<th>'+data[i].header_firstName+'</th>'
+	        +'<th>'+data[i].header_lastName+'</th>'
+	        +'<th>'+data[i].header_isAdmin+'</th>'
+	        +'<th>'+data[i].header_password+'</th>'
+	        +'<th></th>'
+	        +'</tr>'
+	        +'</thead>'
+	      );
+	      table.append('<tr>');
+	  		table.append('<tbody>');
+	      /*
+	        tabledata += '<tr>';
+	        tabledata += '<td>'+data[i].header_firstName+'</td>';
+	        tabledata += '<td>'+data[i].header_lastName+'</td>';
+	        tabledata += '</tr>';*/
+		} else {
+	        tabledata += '<tr>';
+	        tabledata += '<td>'+data[i].firstName+'</td>';
+	        tabledata += '<td>'+data[i].lastName+'</td>';
+	        tabledata += '<td>'+data[i].isAdmin+'</td>';
+	        tabledata += '<td>'+data[i].password+'</td>';
+	        if(data[i].isAdmin){
         	tabledata += '<td>Yes</td>';
 		} else {
         	tabledata += '<td>No</td>';
 		}
-        tabledata += '</tr>';
+	        tabledata += '</tr>';
+	    }
       }
       table.append(tabledata);
       table.append('<td></td>');
