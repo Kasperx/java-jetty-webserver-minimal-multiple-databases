@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import java.util.Map.Entry;
 
+import main.java.com.mywebsite.Data.Person;
 import main.java.com.mywebsite.common.logger.Logger;
 import main.java.com.mywebsite.common.logger.LoggerConfig;
 
@@ -83,27 +84,33 @@ public class DatabaseFile extends Database implements Serializable
 				+ "]"
 				);
 	}
-	public ArrayList<ArrayList<String>> getData()
+	public ArrayList<Person> getData()
     {
-        ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
+        ArrayList<Person> data = new ArrayList<Person>();
         try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream(path)))
         {
             DatabaseFile db;
             Object obj;
 //            db = new DatabaseFile();
 //            db = inFile.readObject();
+            Person person = new Person();
             while((obj = inFile.readObject()) != null)
             {
-//                obj = inFile.readObject();
+////                obj = inFile.readObject();
+//                db = new DatabaseFileObject();
+//                db = (DatabaseFileObject)obj;
+//                ArrayList<String> temp = new ArrayList<String>();
+//                temp.add(String.valueOf(db.id));
+//                temp.add(db.name);
+//                temp.add(db.lastname);
+////                temp.add(db.pw);
+////                temp.add(String.valueOf(db.admin));
+//                data.add(temp);
                 db = new DatabaseFile();
                 db = (DatabaseFile)obj;
-                ArrayList<String> temp = new ArrayList<String>();
-                temp.add(String.valueOf(db.id));
-                temp.add(db.name);
-                temp.add(db.lastname);
-//                temp.add(db.pw);
-//                temp.add(String.valueOf(db.admin));
-                data.add(temp);
+                person.firstName = (db.name);
+                person.lastName = (db.lastname);
+                data.add(person);
             }
             return data;
         }
@@ -125,43 +132,37 @@ public class DatabaseFile extends Database implements Serializable
     {
         return -1;
     }
-    public ArrayList <ArrayList<String>> getAllData()
+    public ArrayList<Person> getAllData()
     {
-        ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
+        ArrayList<Person> data = new ArrayList<Person>();
         try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream(path)))
         {
-            DatabaseFile db;
-            Object obj;
-            ArrayList<String> temp = new ArrayList<String>();
-            temp.add("id");
-            temp.add("name");
-            temp.add("lastname");
-            temp.add("password");
-            temp.add("permission");
-            data.add(temp);
-            while((obj = inFile.readObject()) != null)
-            {
-                db = new DatabaseFile();
-                db = (DatabaseFile)obj;
-                temp = new ArrayList<String>();
-                temp.add(String.valueOf(db.id));
-                temp.add(db.name);
-                temp.add(db.lastname);
-                temp.add(db.pw);
-                temp.add(String.valueOf(db.admin));
-                data.add(temp);
-            }
+//            DatabaseFileObject db;
+//            Object obj;
+//            ArrayList<Person> temp = new ArrayList<Person>();
+//            Person person = new Person();
+//            person.id = 
+//            temp.add("id");
+//            temp.add("name");
+//            temp.add("lastname");
+//            temp.add("password");
+//            temp.add("permission");
+//            data.add(temp);
+//            while((obj = inFile.readObject()) != null)
+//            {
+//                db = new DatabaseFileObject();
+//                db = (DatabaseFileObject)obj;
+//                temp = new ArrayList<Person>();
+//                temp.add(String.valueOf(db.id));
+//                temp.add(db.name);
+//                temp.add(db.lastname);
+//                temp.add(db.pw);
+//                temp.add(String.valueOf(db.admin));
+//                data.add(temp);
+//            }
             return data;
         }
-        catch(ClassNotFoundException cnfe)
-        {
-            cnfe.printStackTrace();
-        }
-        catch(FileNotFoundException fnfe)
-        {
-            fnfe.printStackTrace();
-        }
-        catch(IOException e)
+        catch(Exception e)
         {
             e.printStackTrace();
         }
@@ -257,6 +258,10 @@ public class DatabaseFile extends Database implements Serializable
 	@Override
 	public void connect()
 	{
+	}
+	@Override
+	public boolean insertData(String[] data) {
+		return false;
 	}
 }  
 

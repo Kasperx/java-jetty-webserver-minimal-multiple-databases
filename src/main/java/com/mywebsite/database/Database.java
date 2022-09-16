@@ -11,16 +11,21 @@ import java.util.Random;
 
 import com.github.javafaker.Faker;
 
+import main.java.com.mywebsite.Data.Person;
 import main.java.com.mywebsite.common.logger.Logger;
 import main.java.com.mywebsite.common.logger.LoggerConfig;
 import main.java.com.mywebsite.database.DAO.Dao_DBConnect;
-import main.java.com.mywebsite.database.Interfaces.DatabaseInterface;
+import main.java.com.mywebsite.database.Interfaces.DatabaseInterfaceObject;
 
-public abstract class Database extends Dao_DBConnect implements DatabaseInterface
+public abstract class Database extends Dao_DBConnect implements DatabaseInterfaceObject
 {
     static Logger logger = LoggerConfig.getLogger(Database.class.getName());
     protected boolean permitCreateDB = true;
-    
+    /**
+     * enum for database use
+     * @author cgl
+     *
+     */
     public static enum DatabaseType
     {
         sqlite("sqlite"),
@@ -42,10 +47,19 @@ public abstract class Database extends Dao_DBConnect implements DatabaseInterfac
     protected String path;
     boolean headerInUppercaseCharacter = true;
     HashMap<String, String> mapFromFile;
+    /**
+     * get instance
+     * @return
+     */
     public static Database getInstance()
     {
         return getInstance(DatabaseType.getValue());
     }
+    /**
+     * get instance
+     * @param source
+     * @return
+     */
     public static Database getInstance(DatabaseType source)
     {
         Database data = null;
@@ -70,7 +84,10 @@ public abstract class Database extends Dao_DBConnect implements DatabaseInterfac
         }
         return data;
     }
-    
+    /**
+     * get new random data
+     * @return
+     */
     protected HashMap <String[], Integer> getNewData()
     {
         //////////////////////////////////////////
@@ -85,26 +102,45 @@ public abstract class Database extends Dao_DBConnect implements DatabaseInterfac
             String lastName = faker.name().lastName();
 //            String streetAddress = faker.address().streetAddress();
 //            result.put(firstName, new Random().nextInt(10000000) + 1000000);
-            result.put(new String[]{firstName, lastName}, new Random().nextInt(10000000) + 1000000);
+//            result.put(new String[]{firstName, lastName}, new Random().nextInt(10000000) + 1000000);
+            result.put(new String[]{firstName, lastName}, getRandom());
             temp++;
         }
         return result;
     }
     public abstract void connect();
     public abstract boolean createDatabaseIfNotExists();
-    public abstract ArrayList<ArrayList<String>> getData();
-    public abstract ArrayList<ArrayList<String>> getAllData();
+    public abstract ArrayList<Person> getData();
+    public abstract ArrayList<Person> getAllData();
     public abstract boolean isPermitted(String name, String password);
     public abstract int getId(String name);
     public abstract void insertData();
+    public abstract boolean insertData(String [] data);
+    public int getRandom()
+    {
+    	return new Random().nextInt(10000000) + 1000000;
+    }
+    /**
+     * 
+     * @return
+     */
 	public boolean isHeaderInUppercaseCharacter()
 	{
 		return headerInUppercaseCharacter;
 	}
+	/**
+	 * 
+	 * @param headerInUppercaseCharacter
+	 */
 	public void setHeaderInUppercaseCharacter(boolean headerInUppercaseCharacter)
 	{
 		this.headerInUppercaseCharacter = headerInUppercaseCharacter;
 	}
+	/**
+	 * get properties
+	 * @param filename
+	 * @return
+	 */
     public Map <String, String> getProperties(String filename)
     {
         mapFromFile = new HashMap<String, String>();
@@ -130,13 +166,47 @@ public abstract class Database extends Dao_DBConnect implements DatabaseInterfac
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            logger.error(e);
             return mapFromFile;
         }
         return mapFromFile;
     }
+    /**
+     * load property
+     * @param keyname
+     * @return
+     */
     public String getProperty (String keyname)
     {
         return mapFromFile.get(keyname);
+    }
+    /**
+     * convert string to int value
+     * @param text
+     * @return
+     */
+    public static int toInt(String text)
+    {
+        try{
+            if(text == null || text.isEmpty()) {
+                return 0;
+            }
+            return Integer.parseInt(text);
+        } catch (Exception e) {
+            logger.error(e);
+            return 0;
+        }
+    }
+    /**
+     * string to boolean
+     * @return
+     */
+    public static boolean toBoolean(String text)
+    {
+       if(text.equals("true")) {
+           return true;
+       } else {
+           return false;
+       }
     }
 }
