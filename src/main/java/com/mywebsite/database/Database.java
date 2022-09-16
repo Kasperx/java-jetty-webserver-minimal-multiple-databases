@@ -15,9 +15,9 @@ import main.java.com.mywebsite.Data.Person;
 import main.java.com.mywebsite.common.logger.Logger;
 import main.java.com.mywebsite.common.logger.LoggerConfig;
 import main.java.com.mywebsite.database.DAO.Dao_DBConnect;
-import main.java.com.mywebsite.database.Interfaces.DatabaseInterfaceObject;
+import main.java.com.mywebsite.database.Interfaces.DatabaseInterface;
 
-public abstract class Database extends Dao_DBConnect implements DatabaseInterfaceObject
+public abstract class Database extends Dao_DBConnect implements DatabaseInterface
 {
     static Logger logger = LoggerConfig.getLogger(Database.class.getName());
     protected boolean permitCreateDB = true;

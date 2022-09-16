@@ -1,6 +1,6 @@
 
 // $(document).ready(function() {
-
+/*
   $.ajax({
     url: "?get=use_json",
     context: document.body
@@ -9,6 +9,26 @@
       $('#table').remove();
     // }
   });
+*/
+  function insertDataTest()
+  {
+    let table = $('#table');
+    table.append('<tr id="tableinput">'
+    +'<td>'
+    +'<input placeholder="Input name">'
+    +'</td>'
+    +'<td>'
+    +'<input placeholder="Input action">'
+    +'</td>'
+    +'<td>'
+    +'<input placeholder="Input action name">'
+    +'</td>'
+    +'<td>'
+    +'<input type="button" id="btn_send" class="btn btn-success" onclick="javascript:sendDataToSystem()" value="send"></input>'
+    +'</td>'
+    );
+    table.remove('#tableinput');
+  }
 
   function login()
   {
@@ -71,228 +91,185 @@
   function getData()
   {
     $.ajax({
-      url: "?get=data",
+      url: "?get=data&format=json",
       context: document.body
     }).done(function(data) {
-        $('#h1').empty();
-        $('#h1').append('<h1 style="font-size:50px;"><marquee>User view</marquee></h1></p>');
-        $('#table_input').remove();
-        let table_input = $('<table>');
-        table_input.addClass("table");
-        // table.addClass("table-striped");
-        table_input.addClass("table-hover");
-        table_input.attr('id', 'table_input');
-        table_input.append('<tr>');
-        table_input.append('<td><input placeholder="input 1st name" id="name"></td>');
-        table_input.append('<td><input placeholder="input last name" id="surname"></td>');
-        // let button = $('#button');
-        // button.attr('id', 'btn_send');
-        // button.on('click', function(sendDataToSystem){});
-        // button.addClass("btn");
-        // button.addClass("btn-success");
-        // button.append('send');
-        table_input.append('<td>');
-        // table_input.append('<td><button id="btn_send" class="btn btn-success" onclick="javascript:sendDataToSystem()">send</button></td>');
-        table_input.append(
-            '<td><input type="button" id="btn_send" class="btn btn-success" onclick="javascript:sendDataToSystem()" value="send"></input></td>'
-            );
-          // table_input.append(button);
-        table_input.append('</td>');
-        table_input.append('</tr>');
-        table_input.append('</table>');
-        $('body').append('<p></p>');
-        $('body').append(table_input);
-        $('#table').remove();
-        // $('#table').empty();
-        let sizeOfData = data.length;
-        // create table with data
-        var table = $('<table>');
-        table.addClass("table");
-        // table.addClass("table-striped");
-        table.addClass("table-hover");
-        table.attr('id', 'table');
-        // table.append('<tr>');
-        // table.append('<th>ID</th>');
-        // table.append('<th>FIRSTNAME</th>');
-        // table.append('<th>LASTNAME</th>');
-        // table.append('<th>STATE</th>');
-        // table.append('<th>AGE</th>');
-        // table.append('<th>PW</th>');
-        table.append('<tr>');
-        // table.append('<th>'+data[0].header_firstName+'</th>');
-        // table.append('<th>'+data[0].header_lastName+'</th>');
-        table.append('<th class="thead-dark">FIRSTNAME</th>');
-        table.append('<th class="thead-dark">LASTNAME</th>');
-        table.append('</tr>');
-        for(let i=0; i<data.length; i++){
-          table.append('<tr>');
-          table.append('<td>'+data[i].firstName+'</th>');
-          table.append('<td>'+data[i].lastName+'</th>');
-          table.append('</tr>');
-        }
-        // $.each(data, function(key, val)
-        // {
-        //     table.append('<tr>');
-        //     table.append('<td>'+val.id+'</td>');
-        //     table.append('<td>'+val.firstname+'</td>');
-        //     table.append('<td>'+val.lastname+'</td>');
-        //     table.append('<td>'+val.state+'</td>');
-        //     table.append('<td>'+val.age+'</td>');
-        //     table.append('<td>'+val.pw+'</td>');
-        //     table.append('</tr>');
-        // });
-        table.append('</table>');
-        $('body').append('<p></p>');
-        $('body').append(table);
-        // $('#table').append('<p></p>');
-        // $('#table').append(table);
-        // let text;
-        // if(sizeOfData == undefined)
-        // {
-        //   text='';
-        // }else{
-        //   text=' ('+sizeOfData+')';
-        // }
-        // $("#input").html('Got data'+text).addClass('btn btn-success');
-      });
-  }
-
-  function getWeather()
-  {
-    $.ajax({
-      url: "?get=weather",
-      context: document.body
-    }).done(function(data) {
-      });
-  }
-
-  function getAllData()
-  {
-    $.ajax({
-      url: "?get=admin&user=admin&pw=secret",
-      context: document.body
-    }).done(function(data) {
-      $('#table_input').remove();  
-      $('#table').remove();
-      let sizeOfData = data.length;
-      // create table with data
+      // Manage header
       $('#h1').empty();
-      $('#h1').append('<h1 style="font-size:50px;"><marquee>Admin view</marquee></h1></p>');
-      var table = $('<table>').addClass('table').addClass('table-striped');
+      $('#h1').append('<h1 style="font-size:50px;"><marquee>User view</marquee></h1></p>');
+      //////////////////////////////////////////////////////
+      // Manage table for data input
+      //////////////////////////////////////////////////////
+      // create table with data
+      let table = $('#table');
+      table.remove();
+      // table = $('<table>');
+      table = $('<table>');
+      table.addClass("table");
+      table.addClass("table-striped");
+      table.addClass("table-hover");
       table.attr('id', 'table');
-      // table.append('<tr>');
-      // table.append('<th>ID</th>');
-      // table.append('<th>FIRSTNAME</th>');
-      // table.append('<th>LASTNAME</th>');
-      // table.append('<th>STATE</th>');
-      // table.append('<th>AGE</th>');
-      // table.append('<th>PW</th>');
-      // table.append('</tr>');
-      // $.each(data, function(key, val)
-      // {
-      //     table.append('<tr>');
-      //     table.append('<td>'+val.id+'</td>');
-      //     table.append('<td>'+val.firstname+'</td>');
-      //     table.append('<td>'+val.lastname+'</td>');
-      //     table.append('<td>'+val.state+'</td>');
-      //     table.append('<td>'+val.age+'</td>');
-      //     table.append('<td>'+val.pw+'</td>');
-      //     table.append('</tr>');
-      // });
-      /*
+      table.append('<thead class="thead-dark">'
+        +'<tr>'
+        +'<th>First Name</th>'
+        +'<th>Last Name</th>'
+        +'<th></th>'
+        +'</tr>'
+        +'</thead>'
+      );
+      // table.addClass("thead-dark");
       table.append('<tr>');
-      table.append('<th>'+data[0][0]+'</th>');
-      table.append('<th>'+data[0][1]+'</th>');
-      table.append('</tr>');
-      for(let i=1; i<data.length; i++){
-        table.append('<tr>');
-        table.append('<th>'+data[i][0]+'</th>');
-        table.append('<th>'+data[i][1]+'</th>');
-        table.append('<th>'+data[i][2]+'</th>');
-        table.append('<th>'+data[i][3]+'</th>');
-        if(data[i][4] == 0){
-          table.append('<th>no</th>');
-        } else {
-          table.append('<th>yes</th>');
-        }
-        */
-        table.append('<tr>');
-      table.append('<th>ID</th>');
-      table.append('<th>FIRSTNAME</th>');
-      table.append('<th>LASTNAME</th>');
-      table.append('<th>PASSWORD</th>');
-      table.append('<th>IS_ADMIN</th>');
-      table.append('</tr>');
+      table.append('<tbody>');
+      let tabledata = '';
       for(let i=0; i<data.length; i++){
-        table.append('<tr>');
-        table.append('<td>'+data[i].id+'</td>');
-        table.append('<td>'+data[i].firstName+'</td>');
-        table.append('<td>'+data[i].lastName+'</td>');
-        table.append('<td>'+data[i].password+'</td>');
-        table.append('<td>'+
-          (data[i].isAdmin == 1? "yes" : "no")
-          +'</thd');
-        table.append('</tr>');
+        tabledata += '<tr>';
+        tabledata += '<td>'+data[i].firstName+'</td>';
+        tabledata += '<td>'+data[i].lastName+'</td>';
+        tabledata += '</tr>';
       }
-        table.append('</tr>');
+      table.append(tabledata);
+      table.append('</tbody>');
       table.append('</table>');
       $('body').append('<p></p>');
       $('body').append(table);
-      // $('#table').append('<p></p>');
-      // $('#table').append(table);
-      let text;
-      if(sizeOfData == undefined)
-      {
-        text='';
-      }else{
-        text=' ('+sizeOfData+')';
-      }
-      // $("#input").html('Got data'+text).addClass('btn btn-success');
     });
   }
+  function getAllData()
+  {
+    $.ajax({
+      url: "?get=admin&format=json&user=admin&pw=secret",
+      context: document.body
+    }).done(function(data) {
+      // Manage header
+      $('#h1').empty();
+      $('#h1').append('<h1 style="font-size:50px;"><marquee>User view</marquee></h1></p>');
+      //////////////////////////////////////////////////////
+      // Manage table for data input
+      //////////////////////////////////////////////////////
+      // create table with data
+      let table = $('#table');
+      table.remove();
+      // table = $('<table>');
+      table = $('<table>');
+      table.addClass("table");
+      table.addClass("table-striped");
+      table.addClass("table-hover");
+      table.attr('id', 'table');
+      table.append('<thead class="thead-dark">'
+        +'<tr>'
+        +'<th>First Name</th>'
+        +'<th>Last Name</th>'
+        +'<th>Password</th>'
+        +'<th>Admin</th>'
+        +'<th></th>'
+        +'</tr>'
+        +'</thead>'
+      );
+      // table.addClass("thead-dark");
+      table.append('<tr>');
+      table.append('<tbody>');
+      let tabledata = '';
+      for(let i=0; i<data.length; i++){
+        tabledata += '<tr>';
+        tabledata += '<td>'+data[i].firstName+'</td>';
+        tabledata += '<td>'+data[i].lastName+'</td>';
+        tabledata += '<td>'+data[i].password+'</td>';
+        if(data[i].isAdmin){
+        	tabledata += '<td>Yes</td>';
+		} else {
+        	tabledata += '<td>No</td>';
+		}
+        tabledata += '</tr>';
+      }
+      table.append(tabledata);
+      table.append('<td></td>');
+      table.append('<td><input style="max-width:100%;" placeholder="Input first name" id="input_position"></input></td>');
+      table.append('<td><input style="max-width:100%;" placeholder="Input last name" id="input_name"></input></td>');
+      table.append('<td><input style="max-width:100%;" placeholder="Input password" id="input_action"></input></td>');
+      table.append(
+        '<td>'
+        +'<input type="button" id="btn_send" class="btn btn-success" onclick="javascript:sendDataToSystem()" value="send"></input>'
+        +'</td>'
+      );
 
+      table.append('</tbody>');
+      table.append('</table>');
+      $('body').append('<p></p>');
+      $('body').append(table);
+    });
+  }
+  function getWeather()
+  {
+    $.ajax({
+      url: "?get=weather&format=json",
+      context: document.body
+    }).done(function(data) {
+      });
+  }
   function insertData()
   {
     $.ajax({
-      url: "?get=insert",
+      url: "?get=insert&format=json",
       context: document.body
     }).done(function(data) {
       alert("Inserted new data.");
-    });
-  }
-
-  // document.getElementById('btn_send').addEventListener('click', function() {
-  // // $('#btn_send').addEventListener('click', function() {
-  //   sendDataToSystem(argument1,argument2);
-  // },false);
-
-  function sendDataToSystem()
-  {
-    let input_name_value = $('#name').val();
-    let input_surname_value = $('#surname').val();
-    $.ajax({
-      url: "?get=adduser"
-      +"&name="+input_name_value
-      +"&surname="+input_surname_value,
-      context: document.body
-    }).done(function(data) {
-      alert("Inserted '"+input_name_value+" "+input_surname_value+"' to system.");
-      // call new data after insert
-    //   $.ajax({
-    //     url: "?get=data",
-    //     context: document.body
-    //   }).done(function() {
-        
-    //   });
-    // }).done(function() {
-    //   alert('OK');
-      getData();
     }).fail(function ( jqXHR, textStatus, errorThrown ) {
       // console.log(jqXHR);
       // console.log(textStatus);
       // console.log(errorThrown);
       alert('Failed');
-    });
+    });;
   }
-
-// });
+  function sendDataToSystem()
+  {
+    // let input_position_value = $('#input_position').val();
+    let input_name_position_value = $('#input_position').val();
+    let input_name_value = $('#input_name').val();
+    let input_action_value = $('#input_action').val();
+    let input_action_name_value = $('#input_action_name').val();
+    if(input_name_position_value && input_name_value == "" && input_action_value == "" && input_action_name_value == "")
+    {}
+    else {
+      $.ajax({
+        url: "?get=add_user"
+        +"&format=json"
+        +"&position="+input_name_position_value
+        +"&name="+input_name_value
+        +"&action="+input_action_value
+        +"&action_name="+input_action_name_value,
+        context: document.body
+      }).done(function(data) {
+        alert("Inserted "
+        // +input_position_value+" "
+        +input_name_position_value+" ",
+        +input_name_value+" ",
+        +input_action_value+" ",
+        +input_action_name_value,
+        +"' to system.");
+        // call new data after insert
+      //   $.ajax({
+      //     url: "?get=data",
+      //     context: document.body
+      //   }).done(function() {
+          
+      //   });
+      // }).done(function() {
+      //   alert('OK');
+        getData();
+      }).fail(function ( jqXHR, textStatus, errorThrown ) {
+        // console.log(jqXHR);
+        console.log(textStatus);
+        // console.log(errorThrown);
+        alert('Failed');
+      });
+      // insertDataTest();
+    }
+}
+$(function() {
+  $('#table').on('editable-save.bs.table', function(e, field, row, oldValue){
+      console.log("1 "+ field);
+      console.log("2 "+ row[field]);
+      console.log("3 "+ row.lot);
+      console.log("4 "+ oldValue);
+  });    
+});

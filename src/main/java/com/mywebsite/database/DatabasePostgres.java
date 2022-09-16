@@ -61,5 +61,10 @@ public class DatabasePostgres extends Database
 	public boolean insertData(String[] data) {
 		return false;
 	}
+    @Override
+    public ArrayList<Person> getData(boolean withHeader)
+    {
+        return null;
+    }
 }  
 

@@ -73,7 +73,7 @@ public class DatabaseSQLite extends Database
     /**
      * get data without sensible information
      */
-    public ArrayList<Person> getData()
+    public ArrayList<Person> getData(boolean withHeader)
     {
         String sql = ""
         		+ "SELECT "
@@ -84,7 +84,8 @@ public class DatabaseSQLite extends Database
         		+ "person "
         		+ "where name != 'admin'";
 //        ArrayList<Person> data = getDataFromDBWithHeader(sql, false);
-        ArrayList<Person> data = getDataFromDBWithoutHeader(sql, false);
+        ArrayList<Person> data = null;
+        data = getDataFromDB(sql, false, withHeader);
         return data;
     }
 //    /**
@@ -140,7 +141,7 @@ public class DatabaseSQLite extends Database
                 + " inner join login on p.id = login.p_id;";
         // "SELECT p.id, p.name, login.p_password, login.p_admin FROM person p inner join login on p.id = login.p_id where login.p_admin = 1"
 //        ArrayList<Person> data = getDataFromDBWithHeader(sql, true);
-        ArrayList<Person> data = getDataFromDBWithoutHeader(sql, true);
+        ArrayList<Person> data = getDataFromDB(sql, true, true);
         return data;
     }
     /**
@@ -593,26 +594,25 @@ public class DatabaseSQLite extends Database
         logger.debug(sql + " " + Arrays.asList(values));
         return preparedStatement;
     }
-    /**
-     * 
-     * @param sql
-     * @return
-     */
-    ArrayList<Person> getDataFromDBWithoutHeader(String sql, boolean admin)
-    {
-    	ArrayList<Person> data = new ArrayList<Person>();
-    	try
-    	{
-//        	ResultSet resultSet = executeGet(sql);
-//        	ResultSetMetaData rsmd = resultSet.getMetaData();
-        	data = getDataFromDB(sql, admin);
-    	}
-    	catch(Exception e)
-    	{
-    		logger.error(e);
-    	}
-    	return data;
-    }
+//    /**
+//     * 
+//     * @param sql
+//     * @param admin
+//     * @return
+//     */
+//    ArrayList<Person> getDataFromDBWithoutHeader(String sql, boolean admin)
+//    {
+//    	ArrayList<Person> data = new ArrayList<Person>();
+//    	try
+//    	{
+//        	data = getDataFromDB(sql, admin);
+//    	}
+//    	catch(Exception e)
+//    	{
+//    		logger.error(e);
+//    	}
+//    	return data;
+//    }
     /**
      * get data from db, choose admin or not
      * @param sql
@@ -620,30 +620,41 @@ public class DatabaseSQLite extends Database
      * @param rsmd
      * @return
      */
-//    ArrayList<Person> getDataFromDB(String sql, ResultSet resultSet, boolean admin)
-    ArrayList<Person> getDataFromDB(String sql, boolean admin)
+    ArrayList<Person> getDataFromDB(String sql, boolean admin, boolean withHeader)
     {
         ResultSet resultSet = executeGet(sql);
     	ArrayList<Person> data = new ArrayList<Person>();
         try
         {
-            Person person;
+            Person person = null;
+            String headerID = "id";
+            String headerFistName = "first name";
+            String headerLastName = "last name";
+            String headerPassword = "password";
+            if(withHeader) {
+                Database db = Database.getInstance();
+                if(db.isHeaderInUppercaseCharacter()) {
+                    headerID = headerID.toUpperCase();
+                    headerFistName = headerFistName.toUpperCase();
+                    headerLastName = headerLastName.toUpperCase();
+                    headerPassword = headerPassword.toUpperCase();
+                }
+                person = new Person();
+                if(admin) {
+                    person.setHeader_id(headerID);
+                    person.setHeader_firstName(headerFistName);
+                    person.setHeader_lastName(headerLastName);
+                    person.setHeader_password(headerPassword);
+                } else {
+                    person.setHeader_firstName(headerFistName);
+                    person.setHeader_lastName(headerLastName);
+                }
+                data.add(person);
+            }
             if(admin) {
                 while(resultSet != null && resultSet.next())
                 {
-//                	person = new Person(
-//                	        resultSet.getString("name"),
-//                	        resultSet.getString("lastname"),
-//                	        false
-//            	        );
-//                	person = new Person();
-//                	person.id = DatabaseObject.toInt(resultSet.getString("id"));
-//                	person.firstName = resultSet.getString("name");
-//                	person.lastName = resultSet.getString("lastName");
-//                	person.password = resultSet.getString("password");
-//                	person.isAdmin = resultSet.getInt("admin");
-//                	data.add(person);
-                	person = new Person();
+            	    person = new Person();
                 	person.setId(
                 	        Database.toInt(resultSet.getString("id"))
                 	        );
@@ -664,17 +675,6 @@ public class DatabaseSQLite extends Database
             } else {
                 while(resultSet.next())
                 {
-//                    person = new Person(
-//                            DatabaseObject.toInt(resultSet.getString("id")),
-//                            resultSet.getString("name"),
-//                            resultSet.getString("lastname"),
-//                            resultSet.getString("password"),
-//                            false
-//                            );
-//                    person = new Person();
-//                    person.firstName = resultSet.getString("name");
-//                    person.lastName = resultSet.getString("lastName");
-//                    data.add(person);
                     person = new Person();
                     person.setFirstName(
                             resultSet.getString("name")
@@ -836,4 +836,9 @@ public class DatabaseSQLite extends Database
 			return false;
 		}
 	}
+    @Override
+    public ArrayList<Person> getData()
+    {
+        return null;
+    }
 }  

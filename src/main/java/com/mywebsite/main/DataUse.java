@@ -287,7 +287,7 @@ public class DataUse extends Dao_Main
             response.setCharacterEncoding("utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
 //            JSONObject data = databasesource.getDataJson();
-            ArrayList<Person> data = databasesource.getData();
+            ArrayList<Person> data = databasesource.getData(true);
             String websitedata = null;
             if(useJson) {
                 response.setContentType("application/json");

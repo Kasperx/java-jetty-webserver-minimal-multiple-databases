@@ -77,7 +77,7 @@ public class DatabaseFile extends Database implements Serializable
 		logger.info("DatabaseFile "
 				+ "["
 				+ "id=" + id
-				+ ", " + "name=" + name
+				+ ", name=" + name
 				+ ", lastname=" + lastname
 				+ ", pw=" + pw
 				+ ", admin=" + admin
@@ -263,5 +263,10 @@ public class DatabaseFile extends Database implements Serializable
 	public boolean insertData(String[] data) {
 		return false;
 	}
+    @Override
+    public ArrayList<Person> getData(boolean withHeader)
+    {
+        return null;
+    }
 }  
 
