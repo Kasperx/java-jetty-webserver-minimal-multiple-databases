@@ -952,15 +952,25 @@ public class DataUse extends Dao_Main
     static void initOptions(HttpServletRequest request)
     {
     	String test = null;
+    	// Show all parameters
+    	Map<String, String[]> parameters = request.getParameterMap();
+    	String temp = "";
+    	for(Map.Entry<String, String[]> parameter: parameters.entrySet()) {
+    	    temp += parameter.getKey()+", ";
+    	}
+    	logger.info("Parameters: "+temp);
+    	//
     	if((test = request.getParameter("format")) != null && test.equals("json")) {
     		useJson = true;
     	} else {
     		useJson = false;
     	}
-    	if((test = request.getParameter("withheader")) != null && test.equals("true")) {
-    	    getDataWithHeader = true;
-    	} else {
-    	    getDataWithHeader = false;
+    	if((test = request.getParameter("withheader")) != null) {
+    	    if(test.equals("true")) {
+    	        getDataWithHeader = true;
+        	} else if(test.equals("false")) {
+        	    getDataWithHeader = false;
+        	}
     	}
     }
 }

@@ -195,12 +195,8 @@ public class Web
                 throws ServletException, IOException
         {
         	super.doPost(request, response);
-            String parameter = request.getParameter("get");
-            logger.info("Found parameter: "+parameter);
-            if(parameter != null || request.getParameter("remember") != null)
-            {
-            	requestByClient = request.getRequestURI().toLowerCase();
-            }
+//        	DataUse website = new DataUse();
+        	DataUse.initOptions(request);
         }
 //        /**
 //         * use cookies

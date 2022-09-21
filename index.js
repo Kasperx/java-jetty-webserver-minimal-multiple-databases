@@ -1,15 +1,17 @@
 
-// $(document).ready(function() {
-/*
-  $.ajax({
-    url: "?get=use_json",
-    context: document.body
-  }).done(function(data) {
-    // if(data){
-      $('#table').remove();
-    // }
-  });
-*/
+  $(document).ready(function (){
+    $.ajax({                                      
+      url: "?format=json"
+	    +"&withheader=true"
+//	    +"&withheader=false"
+	    +"",              
+      type: "post",
+      dataType: 'html',
+      //success: finished //Change to this
+   });
+});
+
+  
   function insertDataTest()
   {
     let table = $('#table');
