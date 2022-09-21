@@ -287,7 +287,12 @@ public class DataUse extends Dao_Main
             response.setCharacterEncoding("utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
 //            JSONObject data = databasesource.getDataJson();
-            ArrayList<Person> data = databasesource.getData(true);
+            ArrayList<Person> data;
+            if(getDataWithHeader) {
+                data = databasesource.getData(true);
+            } else {
+                data = databasesource.getData(false);
+            }
             String websitedata = null;
             if(useJson) {
                 response.setContentType("application/json");
@@ -452,6 +457,12 @@ public class DataUse extends Dao_Main
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setCharacterEncoding("utf-8");
                 ArrayList<Person> data = databasesource.getAllData();
+//                ArrayList<Person> data;
+//                if(getDataWithHeader) {
+//                    data = databasesource.getData(true);
+//                } else {
+//                    data = databasesource.getData(false);
+//                }
                 String websitedata = null;
                 if(useJson) {
                     response.setContentType("application/json");
@@ -940,11 +951,16 @@ public class DataUse extends Dao_Main
      */
     static void initOptions(HttpServletRequest request)
     {
-    	String test = request.getParameter("format");
+    	String test = null;
     	if((test = request.getParameter("format")) != null && test.equals("json")) {
     		useJson = true;
     	} else {
     		useJson = false;
+    	}
+    	if((test = request.getParameter("withheader")) != null && test.equals("true")) {
+    	    getDataWithHeader = true;
+    	} else {
+    	    getDataWithHeader = false;
     	}
     }
 }

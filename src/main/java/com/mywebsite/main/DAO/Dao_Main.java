@@ -4,4 +4,5 @@ public class Dao_Main
 {
 //    protected static boolean useJson = false;
     protected static boolean useJson = true;
+    protected static boolean getDataWithHeader = true;
 }
