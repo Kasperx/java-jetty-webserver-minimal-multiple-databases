@@ -128,7 +128,7 @@ public class DatabaseSQLite extends Database
     /**
      * get data with all information
      */
-    public ArrayList<Person> getAllData()
+    public ArrayList<Person> getAllData(boolean withHeader)
     {
         String sql = "SELECT"
                 + " p.id,"
@@ -141,7 +141,7 @@ public class DatabaseSQLite extends Database
                 + " inner join login on p.id = login.p_id;";
         // "SELECT p.id, p.name, login.p_password, login.p_admin FROM person p inner join login on p.id = login.p_id where login.p_admin = 1"
 //        ArrayList<Person> data = getDataFromDBWithHeader(sql, true);
-        ArrayList<Person> data = getDataFromDB(sql, true, true);
+        ArrayList<Person> data = getDataFromDB(sql, withHeader, true);
         return data;
     }
     /**
@@ -839,6 +839,11 @@ public class DatabaseSQLite extends Database
     @Override
     public ArrayList<Person> getData()
     {
-        return null;
+        return getData(false);
+    }
+    @Override
+    public ArrayList<Person> getAllData()
+    {
+        return getAllData(false);
     }
 }  

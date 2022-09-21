@@ -266,7 +266,12 @@ public class DatabaseFile extends Database implements Serializable
     @Override
     public ArrayList<Person> getData(boolean withHeader)
     {
-        return null;
+        return getData(false);
+    }
+    @Override
+    public ArrayList<Person> getAllData(boolean withHeader)
+    {
+        return getAllData(false);
     }
 }  
 

@@ -456,13 +456,13 @@ public class DataUse extends Dao_Main
             {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setCharacterEncoding("utf-8");
-                ArrayList<Person> data = databasesource.getAllData();
-//                ArrayList<Person> data;
-//                if(getDataWithHeader) {
-//                    data = databasesource.getData(true);
-//                } else {
-//                    data = databasesource.getData(false);
-//                }
+//                ArrayList<Person> data = databasesource.getAllData();
+                ArrayList<Person> data;
+                if(getDataWithHeader) {
+                    data = databasesource.getAllData(true);
+                } else {
+                    data = databasesource.getAllData(false);
+                }
                 String websitedata = null;
                 if(useJson) {
                     response.setContentType("application/json");
@@ -471,7 +471,7 @@ public class DataUse extends Dao_Main
                 } else {
                     response.setContentType("text/html");
                     websitedata = fillWebsiteWithData(data, true);
-                    logger.info(websitedata);
+//                    logger.info(websitedata);
                 }
                 // without json, delete
 //                response.setContentType("text/html");

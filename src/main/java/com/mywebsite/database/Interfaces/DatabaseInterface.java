@@ -33,6 +33,12 @@ public interface DatabaseInterface
      */
     public ArrayList<Person> getAllData();
     /**
+     * get all data including passwords
+     * @param withHeader
+     * @return
+     */
+    public ArrayList<Person> getAllData(boolean withHeader);
+    /**
      * login to database, get permission for admin or not
      * @param name
      * @param password

@@ -14,9 +14,7 @@ public class DatabasePostgres extends Database
     }
     public void connect()
     {
-        try
-        {
-        }
+        try{}
         catch(Exception e)
         {
             e.printStackTrace();
@@ -34,8 +32,7 @@ public class DatabasePostgres extends Database
     }
     public ArrayList<Person> getData()
     {
-    	ArrayList<Person> data = new ArrayList<Person>();
-        return data;
+        return getData(false);
     }
     public int getId(String name)
     {
@@ -43,8 +40,7 @@ public class DatabasePostgres extends Database
     }
     public ArrayList<Person> getAllData()
     {
-    	ArrayList<Person> data = new ArrayList<Person>();
-        return data;
+        return getAllData(false);
     }
     public boolean createDatabaseIfNotExists()
     {
@@ -63,6 +59,11 @@ public class DatabasePostgres extends Database
 	}
     @Override
     public ArrayList<Person> getData(boolean withHeader)
+    {
+        return null;
+    }
+    @Override
+    public ArrayList<Person> getAllData(boolean withHeader)
     {
         return null;
     }
