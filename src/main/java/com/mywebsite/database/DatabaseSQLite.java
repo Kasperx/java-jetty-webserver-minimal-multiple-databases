@@ -55,7 +55,8 @@ public class DatabaseSQLite extends Database
     {
         try
         {
-        	if(connection == null || connection.isClosed())
+        	if(connection == null
+    			|| connection.isClosed())
         	{
         		Class.forName("org.sqlite.JDBC");
         		connection = DriverManager.getConnection("jdbc:sqlite:"+path);
@@ -263,7 +264,8 @@ public class DatabaseSQLite extends Database
             {
                 String tempname = resultSet.getString("name");
                 String temppw = resultSet.getString("p_password");
-                if(name != null && password != null & name.equals(tempname) && password.equals(temppw))
+                if(name != null && password != null
+                		& name.equals(tempname) && password.equals(temppw))
                 {
                     return true;
                 }
@@ -361,7 +363,7 @@ public class DatabaseSQLite extends Database
             stmt.setString(3, password);
             logger.info(stmt.toString());
             stmt.execute();
-            close(null);
+            close(null, stmt);
         }
         catch(SQLException e)
         {
@@ -415,7 +417,7 @@ public class DatabaseSQLite extends Database
             stmt.setString(2, lastName);
             logger.info(stmt.toString());
             stmt.execute();
-            close(null);
+            close(null, stmt);
             return true;
         }
         catch(SQLException e)
@@ -473,7 +475,7 @@ public class DatabaseSQLite extends Database
             stmt.setString(2, password);
             logger.info(stmt.toString());
             stmt.execute();
-            close(null);
+            close(null, stmt);
         }
         catch(SQLException e)
         {
@@ -778,6 +780,33 @@ public class DatabaseSQLite extends Database
     		logger.error(e);
 		}
 	}
+    /**
+     * close db connection
+     * @param resultSet
+     * @param stmt
+     */
+    private void close(ResultSet resultSet, PreparedStatement stmt)
+    {
+    	try
+    	{
+    		if(resultSet != null && !resultSet.isClosed())
+    		{
+    			resultSet.close();
+    		}
+    		if(stmt != null && !stmt.isClosed())
+    		{
+    			stmt.close();
+    		}
+    		if(connection != null)
+    		{
+    			connection.close();
+    		}
+    	}
+    	catch (SQLException e)
+    	{
+    		logger.error(e);
+    	}
+    }
 //    /**
 //     * 
 //     */
@@ -785,7 +814,7 @@ public class DatabaseSQLite extends Database
 //    {
 //        String[] parts = sqlQuery.split("\\?");
 //        StringBuilder sb = new StringBuilder();
-//        // This might be wrong if some '?' are used as litteral '?'. Careful!
+//        // This might be wrong if some '?' are used as literal '?'. Careful!
 //        for (int i = 0; i < parts.length; i++) {
 //            String part = parts[i];
 //            sb.append(part);
@@ -887,7 +916,7 @@ public class DatabaseSQLite extends Database
             stmt.setString(3, action_name);
             logger.info(stmt.toString());
             stmt.execute();
-            close(null);
+            close(null, stmt);
 //    		executeSet(getId(firstName), "");
             return true;
         }

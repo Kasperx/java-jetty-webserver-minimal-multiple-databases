@@ -53,7 +53,7 @@ public class DataUse extends Dao_Main
     static String htmlhead_fullSize;
     static String htmlend;
     static Database.DatabaseType databaseType;
-    static Logger logger = LoggerConfig.getLogger(Database_delete.class.getName());
+    static Logger logger = LoggerConfig.getLogger(DataUse.class.getName());
     
     public DataUse()
     {
@@ -851,7 +851,7 @@ public class DataUse extends Dao_Main
      * @param array
      * @return
      */
-    private ArrayList <String> makeListEntriesUnique (ArrayList <String> array)
+    private ArrayList<String> makeListEntriesUnique (ArrayList <String> array)
     {
         return (ArrayList) array.stream().distinct().collect(Collectors.toList());
     }

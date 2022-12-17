@@ -169,7 +169,9 @@
   function getAllData()
   {
     $.ajax({
-      url: "?get=admin&user=admin&pw=secret",
+//      url: "?get=admin&user=admin&pw=secret",
+      url: "?get=users&user=admin&pw=secret",
+      //url: "/users&user=admin&pw=secret",
       context: document.body
     }).done(function(data) {
       $('#table_input').remove();  
