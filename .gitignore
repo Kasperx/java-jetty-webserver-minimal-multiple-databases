@@ -2,3 +2,5 @@
 /target/
 favicon.ico
 test.db
+
+.idea/
