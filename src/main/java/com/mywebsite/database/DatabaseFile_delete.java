@@ -18,11 +18,10 @@ import org.json.JSONObject;
 
 import java.util.Map.Entry;
 
-import main.java.com.mywebsite.Data.Person;
 import main.java.com.mywebsite.common.logger.Logger;
 import main.java.com.mywebsite.common.logger.LoggerConfig;
 
-public class DatabaseFileObject extends DatabaseObject implements Serializable
+public class DatabaseFile_delete extends Database_delete implements Serializable
 {  
     int id;
     String name;
@@ -31,9 +30,9 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
     boolean admin;
     private static Logger logger;
     
-    public DatabaseFileObject()
+    public DatabaseFile_delete()
     {
-        logger = LoggerConfig.getLogger(DatabaseFileObject.class.getName());
+        logger = LoggerConfig.getLogger(DatabaseFile_delete.class.getName());
         path = System.getProperty("user.dir")+"/test";
 //        path = System.getProperty("user.dir")+"/test";
         File dbFile = new File(path);
@@ -50,7 +49,7 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
             e.printStackTrace();
         }
     }
-    public DatabaseFileObject(int id, String name, String lastname, String pw, boolean admin)
+    public DatabaseFile_delete(int id, String name, String lastname, String pw, boolean admin)
     {
         path = System.getProperty("user.dir")+"/test";
         File dbFile = new File(path);
@@ -84,33 +83,27 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
 				+ "]"
 				);
 	}
-	public ArrayList<Person> getData()
+	public ArrayList<ArrayList<String>> getData()
     {
-        ArrayList<Person> data = new ArrayList<Person>();
+        ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
         try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream(path)))
         {
-            DatabaseFileObject db;
+            DatabaseFile_delete db;
             Object obj;
 //            db = new DatabaseFile();
 //            db = inFile.readObject();
-            Person person = new Person();
             while((obj = inFile.readObject()) != null)
             {
-////                obj = inFile.readObject();
-//                db = new DatabaseFileObject();
-//                db = (DatabaseFileObject)obj;
-//                ArrayList<String> temp = new ArrayList<String>();
-//                temp.add(String.valueOf(db.id));
-//                temp.add(db.name);
-//                temp.add(db.lastname);
-////                temp.add(db.pw);
-////                temp.add(String.valueOf(db.admin));
-//                data.add(temp);
-                db = new DatabaseFileObject();
-                db = (DatabaseFileObject)obj;
-                person.firstName = (db.name);
-                person.lastName = (db.lastname);
-                data.add(person);
+//                obj = inFile.readObject();
+                db = new DatabaseFile_delete();
+                db = (DatabaseFile_delete)obj;
+                ArrayList<String> temp = new ArrayList<String>();
+                temp.add(String.valueOf(db.id));
+                temp.add(db.name);
+                temp.add(db.lastname);
+//                temp.add(db.pw);
+//                temp.add(String.valueOf(db.admin));
+                data.add(temp);
             }
             return data;
         }
@@ -132,37 +125,43 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
     {
         return -1;
     }
-    public ArrayList<Person> getAllData()
+    public ArrayList <ArrayList<String>> getAllData()
     {
-        ArrayList<Person> data = new ArrayList<Person>();
+        ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
         try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream(path)))
         {
-//            DatabaseFileObject db;
-//            Object obj;
-//            ArrayList<Person> temp = new ArrayList<Person>();
-//            Person person = new Person();
-//            person.id = 
-//            temp.add("id");
-//            temp.add("name");
-//            temp.add("lastname");
-//            temp.add("password");
-//            temp.add("permission");
-//            data.add(temp);
-//            while((obj = inFile.readObject()) != null)
-//            {
-//                db = new DatabaseFileObject();
-//                db = (DatabaseFileObject)obj;
-//                temp = new ArrayList<Person>();
-//                temp.add(String.valueOf(db.id));
-//                temp.add(db.name);
-//                temp.add(db.lastname);
-//                temp.add(db.pw);
-//                temp.add(String.valueOf(db.admin));
-//                data.add(temp);
-//            }
+            DatabaseFile_delete db;
+            Object obj;
+            ArrayList<String> temp = new ArrayList<String>();
+            temp.add("id");
+            temp.add("name");
+            temp.add("lastname");
+            temp.add("password");
+            temp.add("permission");
+            data.add(temp);
+            while((obj = inFile.readObject()) != null)
+            {
+                db = new DatabaseFile_delete();
+                db = (DatabaseFile_delete)obj;
+                temp = new ArrayList<String>();
+                temp.add(String.valueOf(db.id));
+                temp.add(db.name);
+                temp.add(db.lastname);
+                temp.add(db.pw);
+                temp.add(String.valueOf(db.admin));
+                data.add(temp);
+            }
             return data;
         }
-        catch(Exception e)
+        catch(ClassNotFoundException cnfe)
+        {
+            cnfe.printStackTrace();
+        }
+        catch(FileNotFoundException fnfe)
+        {
+            fnfe.printStackTrace();
+        }
+        catch(IOException e)
         {
             e.printStackTrace();
         }
@@ -177,8 +176,8 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
         int id=0;
         HashMap <String[], Integer> result = getNewData();
         ///////////////////////////////////////////////////////////
-        ArrayList <DatabaseFileObject> data = new ArrayList<DatabaseFileObject>();
-        data.add(new DatabaseFileObject(
+        ArrayList <DatabaseFile_delete> data = new ArrayList<DatabaseFile_delete>();
+        data.add(new DatabaseFile_delete(
                 id++,
                 "admin",
                 "admin",
@@ -187,7 +186,7 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
                 ));
         for(Entry <String[], Integer> entry: result.entrySet())
         {
-            data.add(new DatabaseFileObject(
+            data.add(new DatabaseFile_delete(
                   id++,
                   entry.getKey()[0],
                   entry.getKey()[1],
@@ -208,7 +207,7 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
 //        }
         try(ObjectOutputStream write= new ObjectOutputStream (new FileOutputStream(path)))
         {
-            for(DatabaseFileObject temp: data)
+            for(DatabaseFile_delete temp: data)
             {
                 write.writeObject((Object)temp);
             }
@@ -226,12 +225,12 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
     {
         try(ObjectInputStream inFile = new ObjectInputStream(new FileInputStream(path)))
         {
-            DatabaseFileObject db;
+            DatabaseFile_delete db;
             Object obj;
             if((obj = inFile.readObject()) != null)
             {
-                db = new DatabaseFileObject();
-                db = (DatabaseFileObject)obj;
+                db = new DatabaseFile_delete();
+                db = (DatabaseFile_delete)obj;
                 if(db.name.equals(name) && db.pw.equals(password))
                 {
                     return true;
@@ -258,10 +257,6 @@ public class DatabaseFileObject extends DatabaseObject implements Serializable
 	@Override
 	public void connect()
 	{
-	}
-	@Override
-	public boolean insertData(String[] data) {
-		return false;
 	}
 }  
 

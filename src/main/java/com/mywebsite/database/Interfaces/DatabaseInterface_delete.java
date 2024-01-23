@@ -4,9 +4,7 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-import main.java.com.mywebsite.Data.Person;
-
-public interface DatabaseInterfaceObject
+public interface DatabaseInterface_delete
 {
     /**
      * connect to database
@@ -21,12 +19,12 @@ public interface DatabaseInterfaceObject
      * get data, but only user basic data
      * @return list with all data, without sensible information like passwords
      */
-    public ArrayList<Person> getData();
+    public ArrayList <ArrayList<String>> getData();
     /**
      * get all data including passwords
      * @return list with all data
      */
-    public ArrayList<Person> getAllData();
+    public ArrayList <ArrayList<String>> getAllData();
     /**
      * login to database, get permission for admin or not
      * @param name
@@ -43,10 +41,4 @@ public interface DatabaseInterfaceObject
 //    public String generateActualSql(String sqlQuery, Object... parameters);
 //    private ResultSet executeGet(String sql);
 //    private void executeSet(String sql);
-    /**
-     * 
-     * @param data
-     * @return
-     */
-    public boolean insertData(String [] data);
 }

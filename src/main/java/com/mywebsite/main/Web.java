@@ -2,33 +2,21 @@ package main.java.com.mywebsite.main;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.CookieManager;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.google.gson.GsonBuilder;
 
 import main.java.com.mywebsite.common.logger.Logger;
 import main.java.com.mywebsite.common.logger.LoggerConfig;
-import main.java.com.mywebsite.database.Database;
-import main.java.com.mywebsite.database.DatabaseSQLite;
 
 public class Web
 {
@@ -38,12 +26,12 @@ public class Web
     static Logger logger = LoggerConfig.getLogger(Web.class.getName());
     public Web (String httpbase, int httpport) {
         if(new File(httpbase).isDirectory()) {
-            this.httpbase = httpbase;
+            Web.httpbase = httpbase;
         }
         else if(new File(httpbase).isFile()) {
-            this.httpbase = httpbase.substring(0, httpbase.lastIndexOf("/"));
+            Web.httpbase = httpbase.substring(0, httpbase.lastIndexOf("/"));
         }
-        initHttpService(this.httpbase, this.httpport);
+        initHttpService(Web.httpbase, Web.httpport);
     }
     public Web () {
         initHttpService(httpbase, httpport);
@@ -64,14 +52,24 @@ public class Web
             ///////////////////////////////////////////////
             // manually handle all requests...
             ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-            ServletHolder sh1 = new ServletHolder(new Web_());
+            ///////////////////////////////////////////////
+            // servlet holder
+            ServletHolder sh1 = new ServletHolder(new MyApi());
             sh1.setInitParameter("resourceBase", httpbase);
             sh1.setInitParameter("dirAllowed", "true");
-            context.addServlet(sh1, httpbase);
+//            context.addServlet(sh1, httpbase);
+            context.addServlet(sh1, "/");
+            // end servlet holder
+            ///////////////////////////////////////////////
+            // servlet holder
+            ServletHolder sh2 = new ServletHolder(new Users());
+            sh2.setInitParameter("resourceBase", httpbase);
+            sh2.setInitParameter("dirAllowed", "true");
+            context.addServlet(sh2, "/users");
+            // end servlet holder
             context.setResourceBase(httpbase);
             context.setAllowNullPathInfo(true);
-            ServletHolder sh = new ServletHolder(new Web_());
-            context.addServlet(sh, "/");
+//            ServletHolder sh = new ServletHolder(new MyApi());
             server.setHandler(context);
             ///////////////////////////////////////////////
             // end: manually handle all requests...
@@ -92,12 +90,10 @@ public class Web
             server.start();
             server.join();
             
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             logger.error(e);
         }
     }
-
     public static void main(String args[])
     {
         for(int i = 0; i < args.length; i++)
@@ -144,21 +140,25 @@ public class Web
             System.exit(0);
     }
 
-    public class Web_ extends HttpServlet
+    @WebServlet(name="Website", urlPatterns = {"/"}, loadOnStartup = 1)
+    public class MyApi extends HttpServlet
 	{
 		private static final long serialVersionUID = 1L;
-        private String request_stringToGetWebsite = "/";
-        private String request_api_weather = "weather";
-        private String request_api_example = "example";
-        private String request_api_call_data_from_db = "data";
-        private String request_api_insert_data_to_db = "insert";
-        private String request_api_get_data_for_admin = "admin";
-        private String request_api_use_json = "use_json";
-        private String requestByClient = "";
-        public Web_() {}
+        private final String request_stringToGetWebsite = "/";
+        private final String request_api_weather = "weather";
+        private final String request_api_example = "example";
+        private final String request_api_call_data_from_db = "data";
+        private final String request_api_insert_data_to_db = "insert";
+        private final String request_api_get_data_for_admin = "admin";
+        private final String request_api_get_users = "users";
+        private final String request_api_use_json = "use_json";
+        private final String request_api_add_user = "adduser";
+        private String requestByClient;
+        public MyApi() {}
         
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException
         {
             DataUse website = new DataUse();
             website.sethttpbase(httpbase);
@@ -168,39 +168,40 @@ public class Web
             	logger.info("Found parameter: "+parameter);
             }
             requestByClient = request.getRequestURI().toLowerCase();
-            if (requestByClient.contains(request_stringToGetWebsite)
+            if(requestByClient.contains(request_stringToGetWebsite)
                     && parameter == null
-                    )
-            {
+                    ) {
                 website.clientRequest_Website(request, response);
             }
-            else if (request_api_weather.equals(parameter))
-            {
-                website.clientRequest_Weather(request, response);
-            }
-//            else if (request_api_example.equals(parameter))
-//            {
-//                website.clientRequest_TableNames(request, response);
-//            }
-            else if (request_api_call_data_from_db.equals(parameter))
-            {
-                website.clientRequest_GetData(request, response);
-            }
-            else if (request_api_insert_data_to_db.equals(parameter))
-            {
-                website.clientRequest_InsertDataToDb(request, response);
-            }
-            else if (request_api_get_data_for_admin.equals(parameter))
-            {
-                website.clientRequest_GetAllData(request, response);
-            }
-            else if (request_api_use_json.equals(parameter))
-            {
-                website.clientRequest_UseJson(request, response);
+            else if (parameter != null) {
+            	switch (parameter) {
+            	case request_api_weather:
+            		DataUse.clientRequest_Weather(request, response);
+            		break;
+            	case request_api_call_data_from_db:
+            		DataUse.clientRequest_GetData(request, response);
+            		break;
+            	case request_api_insert_data_to_db:
+            		DataUse.clientRequest_InsertDataToDb(request, response);
+            		break;
+            	case request_api_get_data_for_admin:
+            	case request_api_get_users:
+            		DataUse.clientRequest_GetAllData(request, response);
+            		break;
+            	case request_api_use_json:
+            		DataUse.clientRequest_UseJson(request, response);
+            		break;
+            	case request_api_add_user:
+            		DataUse.clientRequest_AddUser(request, response);
+            		break;
+				default:
+					break;
+				}
             }
         }
         @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException
         {
         	super.doPost(request, response);
             String parameter = request.getParameter("get");
@@ -215,5 +216,19 @@ public class Web
             Cookie cookie = new Cookie(request.getRemoteUser(), "");
             CookieManager cm = new CookieManager();
         }
+    }
+    @WebServlet(name="Users", urlPatterns = {"/users"}, loadOnStartup = 0)
+    public class Users extends HttpServlet
+    {
+    	/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+    			throws ServletException, IOException {
+    		DataUse.clientRequest_GetAllData(req, resp);
+//        		resp.getWriter().print(true);
+    	}
     }
 }

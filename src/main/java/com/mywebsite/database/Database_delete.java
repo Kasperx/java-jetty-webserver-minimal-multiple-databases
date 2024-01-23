@@ -11,21 +11,16 @@ import java.util.Random;
 
 import com.github.javafaker.Faker;
 
-import main.java.com.mywebsite.Data.Person;
 import main.java.com.mywebsite.common.logger.Logger;
 import main.java.com.mywebsite.common.logger.LoggerConfig;
 import main.java.com.mywebsite.database.DAO.Dao_DBConnect;
-import main.java.com.mywebsite.database.Interfaces.DatabaseInterfaceObject;
+import main.java.com.mywebsite.database.Interfaces.DatabaseInterface_delete;
 
-public abstract class DatabaseObject extends Dao_DBConnect implements DatabaseInterfaceObject
+public abstract class Database_delete extends Dao_DBConnect implements DatabaseInterface_delete
 {
-    static Logger logger = LoggerConfig.getLogger(DatabaseObject.class.getName());
+    static Logger logger = LoggerConfig.getLogger(Database_delete.class.getName());
     protected boolean permitCreateDB = true;
-    /**
-     * enum for database use
-     * @author cgl
-     *
-     */
+    
     public static enum DatabaseType
     {
         sqlite("sqlite"),
@@ -47,29 +42,20 @@ public abstract class DatabaseObject extends Dao_DBConnect implements DatabaseIn
     protected String path;
     boolean headerInUppercaseCharacter = true;
     HashMap<String, String> mapFromFile;
-    /**
-     * get instance
-     * @return
-     */
-    public static DatabaseObject getInstance()
+    public static Database_delete getInstance()
     {
         return getInstance(DatabaseType.getValue());
     }
-    /**
-     * get instance
-     * @param source
-     * @return
-     */
-    public static DatabaseObject getInstance(DatabaseType source)
+    public static Database_delete getInstance(DatabaseType source)
     {
-        DatabaseObject data = null;
+        Database_delete data = null;
         switch(source)
         {
             case file:
-                data = new DatabaseFileObject();
+                data = new DatabaseFile_delete();
                 break;
             case sqlite:
-                data = new DatabaseSQLiteObject();
+                data = new DatabaseSQLite_delete();
                 break;
 //            case mariadb:
 //                data = new DatabaseFile();
@@ -79,15 +65,12 @@ public abstract class DatabaseObject extends Dao_DBConnect implements DatabaseIn
 //                break;
             default:
             	logger.info("Not supported yet: source '"+source.value+"'. Using '"+DatabaseType.sqlite+"'.");
-                data = new DatabaseSQLiteObject();
+                data = new DatabaseSQLite_delete();
                 break;
         }
         return data;
     }
-    /**
-     * get new random data
-     * @return
-     */
+    
     protected HashMap <String[], Integer> getNewData()
     {
         //////////////////////////////////////////
@@ -102,45 +85,26 @@ public abstract class DatabaseObject extends Dao_DBConnect implements DatabaseIn
             String lastName = faker.name().lastName();
 //            String streetAddress = faker.address().streetAddress();
 //            result.put(firstName, new Random().nextInt(10000000) + 1000000);
-//            result.put(new String[]{firstName, lastName}, new Random().nextInt(10000000) + 1000000);
-            result.put(new String[]{firstName, lastName}, getRandom());
+            result.put(new String[]{firstName, lastName}, new Random().nextInt(10000000) + 1000000);
             temp++;
         }
         return result;
     }
     public abstract void connect();
     public abstract boolean createDatabaseIfNotExists();
-    public abstract ArrayList<Person> getData();
-    public abstract ArrayList<Person> getAllData();
+    public abstract ArrayList<ArrayList<String>> getData();
+    public abstract ArrayList<ArrayList<String>> getAllData();
     public abstract boolean isPermitted(String name, String password);
     public abstract int getId(String name);
     public abstract void insertData();
-    public abstract boolean insertData(String [] data);
-    public int getRandom()
-    {
-    	return new Random().nextInt(10000000) + 1000000;
-    }
-    /**
-     * 
-     * @return
-     */
 	public boolean isHeaderInUppercaseCharacter()
 	{
 		return headerInUppercaseCharacter;
 	}
-	/**
-	 * 
-	 * @param headerInUppercaseCharacter
-	 */
 	public void setHeaderInUppercaseCharacter(boolean headerInUppercaseCharacter)
 	{
 		this.headerInUppercaseCharacter = headerInUppercaseCharacter;
 	}
-	/**
-	 * get properties
-	 * @param filename
-	 * @return
-	 */
     public Map <String, String> getProperties(String filename)
     {
         mapFromFile = new HashMap<String, String>();
@@ -166,44 +130,13 @@ public abstract class DatabaseObject extends Dao_DBConnect implements DatabaseIn
         }
         catch (Exception e)
         {
-            logger.error(e);
+            e.printStackTrace();
             return mapFromFile;
         }
         return mapFromFile;
     }
-    /**
-     * load property
-     * @param keyname
-     * @return
-     */
     public String getProperty (String keyname)
     {
         return mapFromFile.get(keyname);
-    }
-    /**
-     * convert string to int value
-     * @param text
-     * @return
-     */
-    public static int toInt(String text)
-    {
-        try{
-            return Integer.parseInt(text);
-        } catch (Exception e) {
-            logger.error(e);
-            return 0;
-        }
-    }
-    /**
-     * string to boolean
-     * @return
-     */
-    public static boolean strToBoolean(String text)
-    {
-       if(text.equals("true")) {
-           return true;
-       } else {
-           return false;
-       }
     }
 }

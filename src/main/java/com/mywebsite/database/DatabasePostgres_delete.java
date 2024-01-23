@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
-import main.java.com.mywebsite.Data.Person;
-
-public class DatabasePostgresObject extends DatabaseObject
+public class DatabasePostgres_delete extends Database_delete
 {  
-    public DatabasePostgresObject()
+    public DatabasePostgres_delete()
     {
         connect();
     }
@@ -32,18 +30,18 @@ public class DatabasePostgresObject extends DatabaseObject
             e.printStackTrace();
         }
     }
-    public ArrayList<Person> getData()
+    public ArrayList<ArrayList<String>> getData()
     {
-    	ArrayList<Person> data = new ArrayList<Person>();
+        ArrayList<ArrayList<String>> data = new ArrayList<ArrayList<String>>();
         return data;
     }
     public int getId(String name)
     {
         return -1;
     }
-    public ArrayList<Person> getAllData()
+    public ArrayList <ArrayList<String>> getAllData()
     {
-    	ArrayList<Person> data = new ArrayList<Person>();
+        ArrayList <ArrayList<String>> data = new ArrayList<ArrayList<String>>();
         return data;
     }
     public boolean createDatabaseIfNotExists()
@@ -57,9 +55,5 @@ public class DatabasePostgresObject extends DatabaseObject
     {
         return false;
     }
-	@Override
-	public boolean insertData(String[] data) {
-		return false;
-	}
 }  
 
